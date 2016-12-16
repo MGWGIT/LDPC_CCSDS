@@ -13,7 +13,6 @@ function [hard, f, its] = decoder_ms_cf1_gen(llr,I,cf)
 	N = uint16(ld.N);
 
 	f = uint8(1);
-	f0 = uint8(1);
 	Ii = uint32(I);
 
 	%f1 = false(1,512);
@@ -67,7 +66,7 @@ function [hard, f, its] = decoder_ms_cf1_gen(llr,I,cf)
     
     it = int32(0);
 
-    while ((it<=Ii)&(f>0|f0>0)) 
+    while ( (it<=Ii) & (f>0) )
         it = it+1;
 
         for i=1:512
@@ -120,24 +119,11 @@ function [hard, f, its] = decoder_ms_cf1_gen(llr,I,cf)
 
 		v = abs(var);
 		s = sign(var);       
-
 			
-		%         for i=1:512
-		%             llr_(i)=llr(i)+data(2,vc(i,1))+data(2,vc(i,2));
-		%         end
-		%         for i=513:1024
-		%             llr_(i)=llr(i)+data(2,vc(i,1))+data(2,vc(i,2))+data(2,vc(i,3));
-		%         end
-
-		%         for i=1:512
-		%             llr_(i)=var(4,N(4,i))+var(10,N(10,i));
-		%             llr_(i+512)=var(5,N(5,i))+var(11,N(11,i))+var(12,N(12,i));
-		%         end
-			
-			 for i=1:512
-				 llr_(i)=-llr(i)+var(4,N(4,i))+var(10,N(10,i));
-				 llr_(i+512)=-llr(i+512)+var(5,N(5,i))+var(11,N(11,i))+var(12,N(12,i));
-			 end
+		for i=1:512
+			llr_(i)=llr(i)+che_(4,N(4,i))+che_(10,N(10,i));
+			llr_(i+512)=llr(i+512)+che_(5,N(5,i))+che_(11,N(11,i))+che_(12,N(12,i));
+		end
 
 		%f1 = c1 < 1;
 		f2 = c2 < 1;
@@ -146,8 +132,6 @@ function [hard, f, its] = decoder_ms_cf1_gen(llr,I,cf)
 		%fs1 = sum(f1);
 		fs2 = sum(f2);
 		fs3 = sum(f3);
-		
-		f0 = f; 
 		
 		if (fs2+fs3) == 0;
 			f = uint8(0);
