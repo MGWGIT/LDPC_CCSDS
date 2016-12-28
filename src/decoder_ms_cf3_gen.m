@@ -1,12 +1,12 @@
 
-function [hard, f, its] = decoder_ms_cf1_gen(llr,I,cf)
+function [hard, f, its] = decoder_ms_cf3_gen(llr,I,cf)
 
 	assert(isa(llr,'double'));
 	assert(all(size(llr) == [1 2048]));
 	assert(isa(I,'double'));
 	assert(all(size(I) == [1 1]));
 	assert(isa(cf,'double'));
-	assert(all(size(cf) == [1 1]));
+	assert(all(size(cf) == [1 3]));
 
 	ld = coder.load( 'decoder_new.mat', 'N');
 
@@ -96,7 +96,9 @@ function [hard, f, its] = decoder_ms_cf1_gen(llr,I,cf)
         
 		%	check node normalization	
         %che(1,:) = che(1,:)*cf;
-        che_(2:15,:) = che(2:15,:)*cf;
+        che_(2:3,:) = che(2:3,:)*cf(1);
+		che_(4:9,:) = che(4:9,:)*cf(2);
+		che_(10:15,:) = che(10:15,:)*cf(3);
 		
         %	variable node update
         for i=1:512
@@ -151,7 +153,7 @@ function [hard, f, its] = decoder_ms_cf1_gen(llr,I,cf)
 			%fc(it-1) = (fs2+fs3);
 			%fc2(it-1) = fs2;
 			%fc3(it-1) = fs3;      
-			its = it-1;	%	last iteration number   
+			its = it-1;	%	last iteration number    
 		end  
 			
     end
